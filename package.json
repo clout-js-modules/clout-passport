@@ -1,0 +1,31 @@
+{
+  "name": "clout-passport",
+  "version": "0.0.1",
+  "description": "Clout module to implement passport",
+  "main": "index.js",
+  "scripts": {
+    "test": "grunt test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/clout-js-modules/clout-passport.git"
+  },
+  "keywords": [
+    "clout",
+    "clout-js",
+    "module",
+    "express",
+    "passport"
+  ],
+  "author": "Muhammad Dadu",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/clout-js-modules/clout-passport/issues"
+  },
+  "homepage": "https://github.com/clout-js-modules/clout-passport#readme",
+  "dependencies": {
+    "debug": "^2.2.0",
+    "passport": "^0.3.2",
+    "passport-local": "^1.0.0"
+  }
+}
