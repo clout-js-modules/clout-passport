@@ -14,16 +14,16 @@ module.exports = {
 		event: 'start',
 		priority: 19,
 		fn: function (next) {
-			var conf = this.config.passport || {},
-				self = this;
+			var self = this,
+				conf = self.config.passport || {},
 				getValue = self.utils.getValue;
 			// ensure directory
 			!conf.directory && (conf.directory = 'strategies');
 			if (!fs.existsSync(conf.directory)) {
-				conf.directory = path.join(this.rootDirectory, conf.directory);
+				conf.directory = path.join(self.rootDirectory, conf.directory);
 			}
 			if (!fs.existsSync(conf.directory)) {
-				this.logger.warn('passport strategies directory not found');
+				self.logger.warn('passport strategies directory not found');
 			}
 
 			// start
@@ -31,11 +31,11 @@ module.exports = {
 			debug('initialize passport');
 
 			function loadStrategy(filePath) {
-				var name = filePath.split('/' + conf.directory + '/')[1].replace('.js', ''),
+				var name = filePath.split(conf.directory + '/')[1].replace('.js', ''),
 					strategy = require(filePath),
 					strategyConf = conf[name] || {};
 				debug('loading strategy %s', name);
-				passport.ues(strategy.apply(self, [strategyConf]));
+				passport.use(strategy.apply(self, [strategyConf]));
 			}
 
 			// load default strategies
@@ -45,11 +45,11 @@ module.exports = {
 			conf.directory = 'strategies';
 			if (conf.useDefault === true) {
 				globPattern = path.join(__dirname, 'strategies/**/*.js');
-				strategyFiles = this.utils.getGlobbedFiles(globPattern);
+				strategyFiles = self.utils.getGlobbedFiles(globPattern);
 				strategyFiles.forEach(loadStrategy);
 			}
 
-			if (conf.useDefault === 'object') {
+			if (typeof conf.useDefault === 'object') {
 				var strategyBase = path.join(__dirname, 'strategies');
 				strategyFiles = [];
 				conf.useDefault.forEach(function (strategyName) {
@@ -61,7 +61,7 @@ module.exports = {
 			conf.directory = conf._directory;
 
 			// load application strategies
-			globPattern = path.join(this.rootDirectory, conf.directory, '**/*.js');
+			globPattern = path.join(conf.directory, '**/*.js');
 			strategyFiles = this.utils.getGlobbedFiles(globPattern);
 			strategyFiles.forEach(loadStrategy);
 
