@@ -12,7 +12,7 @@ const
 module.exports = {
 	initialize: {
 		event: 'start',
-		priority: 16,
+		priority: 19,
 		fn: function (next) {
 			var conf = this.config.passport || {},
 				self = this;
@@ -72,14 +72,14 @@ module.exports = {
 			this.app.use(passport.session());
 
 			// configure serialization and deserialization
-			if (conf.serializeUser && !conf.serializeUser === '<PATH_TO_FN>') {
+			if (conf.serializeUser && conf.serializeUser !== '<PATH_TO_FN>') {
 				debug('serializeUser');
 				var serializeUser = getValue(conf.serializeUser, self);
 				!serializeUser && this.logger.error('conf.serializeUser is invalid');
-				serializeUser && passport.serializeUser(serializeUser());
+				serializeUser && passport.serializeUser(serializeUser);
 			} else this.logger.warn('Please define passport.serializeUser');
 			
-			if (conf.deserializeUser && !conf.deserializeUser === '<PATH_TO_FN>') {
+			if (conf.deserializeUser && conf.deserializeUser !== '<PATH_TO_FN>') {
 				debug('deserializeUser');
 				var deserializeUser = getValue(conf.serializeUser, self);
 				!deserializeUser && this.logger.error('conf.deserializeUser is invalid');

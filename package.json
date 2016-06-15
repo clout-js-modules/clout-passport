@@ -1,6 +1,6 @@
 {
   "name": "clout-passport",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Clout module to implement passport",
   "main": "index.js",
   "scripts": {
