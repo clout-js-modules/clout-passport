@@ -17,6 +17,9 @@ module.exports = {
 			var self = this,
 				conf = self.config.passport || {},
 				getValue = self.utils.getValue;
+			// expose passport
+			this.passport = passport;
+
 			// ensure directory
 			!conf.directory && (conf.directory = 'strategies');
 			if (!fs.existsSync(conf.directory)) {
