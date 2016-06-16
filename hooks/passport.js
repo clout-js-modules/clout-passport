@@ -12,13 +12,26 @@ const
 module.exports = {
 	initialize: {
 		event: 'start',
+		priority: 14,
+		fn: function (next) {
+			debug('initialize passport');
+			// expose passport
+			this.passport = passport;
+			// append to middleware
+			debug('app.use: passport.initialize');
+			this.app.use(passport.initialize());
+			debug('app.use: passport.session');
+			this.app.use(passport.session());
+			next();
+		}
+	},
+	addStrategies: {
+		event: 'start',
 		priority: 19,
 		fn: function (next) {
 			var self = this,
 				conf = self.config.passport || {},
 				getValue = self.utils.getValue;
-			// expose passport
-			this.passport = passport;
 
 			// ensure directory
 			!conf.directory && (conf.directory = 'strategies');
@@ -31,7 +44,7 @@ module.exports = {
 
 			// start
 			debug('config', conf);
-			debug('initialize passport');
+			debug('initialize passport strategies');
 
 			function loadStrategy(filePath) {
 				var name = filePath.split(conf.directory + '/')[1].replace('.js', ''),
@@ -68,25 +81,19 @@ module.exports = {
 			strategyFiles = this.utils.getGlobbedFiles(globPattern);
 			strategyFiles.forEach(loadStrategy);
 
-			// append to middleware
-			debug('app.use: passport.initialize');
-			this.app.use(passport.initialize());
-			debug('app.use: passport.session');
-			this.app.use(passport.session());
-
 			// configure serialization and deserialization
 			if (conf.serializeUser && conf.serializeUser !== '<PATH_TO_FN>') {
 				debug('serializeUser');
 				var serializeUser = getValue(conf.serializeUser, self);
 				!serializeUser && this.logger.error('conf.serializeUser is invalid');
-				serializeUser && passport.serializeUser(serializeUser);
+				serializeUser && passport.serializeUser(serializeUser());
 			} else this.logger.warn('Please define passport.serializeUser');
 			
 			if (conf.deserializeUser && conf.deserializeUser !== '<PATH_TO_FN>') {
 				debug('deserializeUser');
-				var deserializeUser = getValue(conf.serializeUser, self);
+				var deserializeUser = getValue(conf.deserializeUser, self);
 				!deserializeUser && this.logger.error('conf.deserializeUser is invalid');
-				deserializeUser && passport.deserializeUser(deserializeUser);
+				deserializeUser && passport.deserializeUser(deserializeUser());
 			} else this.logger.warn('Please define passport.deserializeUser');
 			next();
 		}
